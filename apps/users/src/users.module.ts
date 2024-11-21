@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import {
@@ -20,7 +19,7 @@ import { UserResolver } from './user.resolver';
       },
     }),
   ],
-  controllers: [UsersController],
+  controllers: [],
   providers: [
     UsersService,
     ConfigService,
