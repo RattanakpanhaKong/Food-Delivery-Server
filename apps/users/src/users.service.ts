@@ -6,6 +6,7 @@ import { PrismaService } from '../../../prisma/prisma.service';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { EmailService } from './email/email.service';
+import { TokenSender } from './utils/sendToken';
 
 interface UserData {
   name: string;
@@ -126,9 +127,29 @@ export class UsersService {
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
 
-    const user = { email, password };
+    // check if user exists
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (user && this.comparePassword(loginDto.password, user.password)) {
+      const tokenSender = new TokenSender(this.configService);
+      tokenSender.sendToken(user);
+    } else {
+      throw new BadRequestException('Invalid Credentials !');
+    }
 
     return user;
+  }
+
+  // compare input password and hashed password
+  async comparePassword(
+    password: string,
+    hashedPassword: string,
+  ): Promise<Boolean> {
+    return await bcrypt.compare(password, hashedPassword);
   }
 
   // get all users service
