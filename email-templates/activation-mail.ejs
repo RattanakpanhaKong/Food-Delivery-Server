@@ -56,20 +56,21 @@
         <h1>Your Activation Code</h1>
       </div>
       <div class="content">
-        <p>Hi <%= name %>,</p>
+        <p>Dear <%= name %>,</p>
         <p>
-          We received a request to activate your account. Please use the code
+          Thank you for registering with Kun Khmer Kitchen. Please use the code
           below to complete your activation. This code is valid for 5 minutes:
         </p>
         <div class="otp"><%= activationCode %></div>
         <p>If you did not request this, you can safely ignore this email.</p>
-        <p>Best regards,</p>
-        <p>The Kun Khmer Team</p>
+        <p>
+          Best regards, <br />
+          The Kun Khmer Kitchen Team
+        </p>
       </div>
       <div class="footer">
         <p>
-          © <%= new Date().getFullYear() %> Kun Khmer. All rights
-          reserved.
+          © <%= new Date().getFullYear() %> Kun Khmer. All rights reserved.
         </p>
       </div>
     </div>
