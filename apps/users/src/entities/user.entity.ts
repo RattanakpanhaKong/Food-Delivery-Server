@@ -19,6 +19,9 @@ export class Avatars {
 @ObjectType()
 export class User {
   @Field()
+  id: string;
+
+  @Field()
   user: string;
 
   @Field()
@@ -34,11 +37,17 @@ export class User {
   avatar?: Avatars | null;
 
   @Field()
-  role: string
+  role: string;
+
+  @Field({ nullable: true })
+  address?: string;
 
   @Field()
-  createAt: Date
+  phone_number: string
 
   @Field()
-  updateAt: Date
+  createAt: Date;
+
+  @Field()
+  updateAt: Date;
 }

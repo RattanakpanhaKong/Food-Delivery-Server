@@ -7,6 +7,7 @@ import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { EmailService } from './email/email.service';
 import { TokenSender } from './utils/sendToken';
+import { error } from 'console';
 
 interface UserData {
   name: string;
@@ -134,14 +135,20 @@ export class UsersService {
       },
     });
 
-    if (user && this.comparePassword(loginDto.password, user.password)) {
-      const tokenSender = new TokenSender(this.configService);
-      tokenSender.sendToken(user);
-    } else {
-      throw new BadRequestException('Invalid Credentials !');
-    }
+    if (user && await this.comparePassword(password, user.password)) {
+      const tokenSender = new TokenSender(this.configService, this.jwtService);
 
-    return user;
+      return tokenSender.sendToken(user);
+    } else {
+      return {
+        user: null,
+        accessToken: null,
+        refreshToken: null,
+        error: {
+          message: 'Invalid Credentials !',
+        },
+      };
+    }
   }
 
   // compare input password and hashed password
