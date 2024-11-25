@@ -7,7 +7,6 @@ import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { EmailService } from './email/email.service';
 import { TokenSender } from './utils/sendToken';
-import { error } from 'console';
 
 interface UserData {
   name: string;
@@ -81,7 +80,9 @@ export class UsersService {
       },
       {
         secret: this.configService.get<string>('ACTIVATION_SECRET'),
-        expiresIn: '5m',
+        expiresIn: this.configService.get<string>(
+          'ACTIVATION_SECRET_EXPIRES_IN',
+        ),
       },
     );
     return { token, activationCode };
@@ -135,7 +136,7 @@ export class UsersService {
       },
     });
 
-    if (user && await this.comparePassword(password, user.password)) {
+    if (user && (await this.comparePassword(password, user.password))) {
       const tokenSender = new TokenSender(this.configService, this.jwtService);
 
       return tokenSender.sendToken(user);
@@ -157,6 +158,14 @@ export class UsersService {
     hashedPassword: string,
   ): Promise<Boolean> {
     return await bcrypt.compare(password, hashedPassword);
+  }
+
+  // get current logged in user
+  async getLoggedInUser(req: any) {
+    const user = req.user;
+    const accessToken = req.accessToken;
+    const refreshToken = req.refreshToken;
+    return { user, accessToken, refreshToken };
   }
 
   // get all users service
