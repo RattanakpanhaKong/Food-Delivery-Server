@@ -168,6 +168,15 @@ export class UsersService {
     return { user, accessToken, refreshToken };
   }
 
+  // logout
+  async logout(req: any) {
+    req.user = null;
+    req.accessToken = null;
+    req.refreshToken = null;
+
+    return { message: 'Logout Successful !' };
+  }
+
   // get all users service
   async getUsers() {
     return this.prisma.user.findMany({});
